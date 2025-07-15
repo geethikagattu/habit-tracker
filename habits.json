@@ -1,0 +1,15 @@
+[
+    {
+      "id": 1,
+      "name": "Drink Water",
+      "description": "8 glasses",
+      "doneDates": ["2025-07-14"]
+    },
+    {
+      "id": 2,
+      "name": "Morning Walk",
+      "description": "30 mins",
+      "doneDates": []
+    }
+  ]
+  
