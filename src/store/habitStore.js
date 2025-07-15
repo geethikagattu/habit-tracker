@@ -1,34 +1,36 @@
-import { create } from 'zustand'
+import { create } from 'zustand';
+import { format } from 'date-fns';
+
+const today = format(new Date(), 'yyyy-MM-dd');
 
 export const useHabitStore = create((set) => ({
   habits: [],
-  
   addHabit: (habit) =>
     set((state) => ({
-      habits: [...state.habits, { ...habit, id: Date.now(), doneDates: [] }]
+      habits: [...state.habits, { ...habit, id: Date.now(), doneDates: [] }],
     })),
-
   deleteHabit: (id) =>
     set((state) => ({
-      habits: state.habits.filter((habit) => habit.id !== id)
+      habits: state.habits.filter((h) => h.id !== id),
     })),
-
-  editHabit: (id, updatedHabit) =>
+  updateHabit: (id, name, description) =>
     set((state) => ({
-      habits: state.habits.map((habit) =>
-        habit.id === id ? { ...habit, ...updatedHabit } : habit
-      )
+      habits: state.habits.map((h) =>
+        h.id === id ? { ...h, name, description } : h
+      ),
     })),
-
-  markHabitDone: (id) =>
+  
+  toggleHabitToday: (id) =>
     set((state) => ({
-      habits: state.habits.map((habit) =>
-        habit.id === id
+      habits: state.habits.map((h) =>
+        h.id === id
           ? {
-              ...habit,
-              doneDates: [...new Set([...habit.doneDates, new Date().toISOString().split('T')[0]])],
+              ...h,
+              doneDates: h.doneDates.includes(today)
+                ? h.doneDates.filter((d) => d !== today)
+                : [...h.doneDates, today],
             }
-          : habit
-      )
+          : h
+      ),
     })),
-}))
+}));
