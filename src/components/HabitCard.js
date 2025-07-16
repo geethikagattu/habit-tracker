@@ -3,32 +3,36 @@ import { useHabitStore } from '../store/habitStore';
 import { format } from 'date-fns';
 
 export default function HabitCard({ habit }) {
-  const deleteHabit = useHabitStore((s) => s.deleteHabit);
-  const toggle = useHabitStore((s) => s.toggleHabitToday);
-  const updateHabit = useHabitStore((s) => s.updateHabit); // new
+  // Zustand store actions
+  const deleteHabit = useHabitStore((s) => s.deleteHabit);         // deletes habit
+  const toggle = useHabitStore((s) => s.toggleHabitToday);         // toggles today's status
+  const updateHabit = useHabitStore((s) => s.updateHabit);         // updates habit details
 
-  const today = format(new Date(), 'yyyy-MM-dd');
-  const isDone = habit.doneDates.includes(today);
+  const today = format(new Date(), 'yyyy-MM-dd');                  // get today's date
+  const isDone = habit.doneDates.includes(today);                 // check if today's done
 
-  const [editMode, setEditMode] = useState(false);
-  const [name, setName] = useState(habit.name);
-  const [desc, setDesc] = useState(habit.description);
+  // local state for editing
+  const [editMode, setEditMode] = useState(false);                 // track if in edit mode
+  const [name, setName] = useState(habit.name);                    // editable name field
+  const [desc, setDesc] = useState(habit.description);             // editable desc field
 
+  // save updated habit
   const handleSave = () => {
-    updateHabit(habit.id, name, desc);
-    setEditMode(false);
+    updateHabit(habit.id, name, desc);                             // update store
+    setEditMode(false);                                            // exit edit mode
   };
 
   return (
     <div style={{
-      backgroundColor: isDone ? '#d0f0c0' : '#fff',
+      backgroundColor: isDone ? '#d0f0c0' : '#fff',                // change bg if done
       border: '2px solid #e2e8f0',
-      borderLeft: `8px solid ${isDone ? '#32cd32' : '#ff6b6b'}`,
+      borderLeft: `8px solid ${isDone ? '#32cd32' : '#ff6b6b'}`,   // green/red left border
       borderRadius: '10px',
       padding: '15px',
       marginBottom: '15px',
       boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
     }}>
+      {/* if in edit mode, show input fields */}
       {editMode ? (
         <>
           <input
@@ -49,11 +53,14 @@ export default function HabitCard({ habit }) {
         </>
       )}
 
+      {/* status line */}
       <p style={{ fontWeight: 'bold', color: isDone ? '#2f855a' : '#e53e3e' }}>
-        Status: {isDone ? '✅ Done Today' : '❌ Not Done'}
+        Status: {isDone ? 'Done Today' : 'Not Done'}
       </p>
 
+      {/* action buttons */}
       <div style={{ marginTop: '10px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+        {/* mark as done / undo */}
         <button onClick={() => toggle(habit.id)} style={{
           backgroundColor: isDone ? '#ed8936' : '#48bb78',
           color: 'white',
@@ -65,6 +72,7 @@ export default function HabitCard({ habit }) {
           {isDone ? 'Undo' : 'Mark Done'}
         </button>
 
+        {/* edit/save/cancel */}
         {editMode ? (
           <>
             <button onClick={handleSave} style={{
@@ -75,7 +83,7 @@ export default function HabitCard({ habit }) {
               borderRadius: '6px',
               cursor: 'pointer'
             }}>
-              💾 Save
+              Save
             </button>
             <button onClick={() => setEditMode(false)} style={{
               backgroundColor: '#a0aec0',
@@ -85,7 +93,7 @@ export default function HabitCard({ habit }) {
               borderRadius: '6px',
               cursor: 'pointer'
             }}>
-              ❌ Cancel
+              Cancel
             </button>
           </>
         ) : (
@@ -97,10 +105,11 @@ export default function HabitCard({ habit }) {
             borderRadius: '6px',
             cursor: 'pointer'
           }}>
-            ✏️ Edit
+            Edit
           </button>
         )}
 
+        {/* delete habit */}
         <button onClick={() => deleteHabit(habit.id)} style={{
           backgroundColor: '#e53e3e',
           color: 'white',
@@ -109,7 +118,7 @@ export default function HabitCard({ habit }) {
           borderRadius: '6px',
           cursor: 'pointer'
         }}>
-          🗑 Delete
+          Delete
         </button>
       </div>
     </div>
